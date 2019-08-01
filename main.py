@@ -14,7 +14,6 @@ tbls = ['table1','table2',...]
 for tbl in tbls:
     print('table:%s,' % (tbl), end=' ')
     cnt = 0
-    cnt_err = 0
     cur_pg.execute('select * from %s' % (tbl))
     rows = cur_pg.fetchall()
     # get fieds name
@@ -22,18 +21,19 @@ for tbl in tbls:
     for row in rows:
         values = []
         for col in row:
-            if type(col) is int:
+            if type(col) is int: # int field should be converted to string
                 values.append(str(col))
-            elif type(col) is str:
+            elif type(col) is str: # string field should be quoted
                 values.append('"'+col+'"')
-            elif type(col) is bool:
+            elif type(col) is bool: # sqlite3 has no boolean type, so convent boolean to int
                 if col:
                     values.append('1')
                 else:
                     values.append('0')
-            elif type(col) == None.__class__:
+            elif type(col) == None.__class__: # NoneType to blank
                 values.append('""')
-            elif type(col) is datetime.date or type(col) is datetime.datetime or type(col) is datetime.time:
+            elif type(col) is datetime.date or type(col) is datetime.datetime or type(col) is datetime.time: # 
+                # datetime convert to date
                 if type(col) is datetime.datetime:
                     col = col.date()
                 elif type(col) is datetime:
@@ -45,13 +45,14 @@ for tbl in tbls:
             cur_sqlite.execute('insert into %s (%s) values(%s)' % (tbl,','.join(fld_names),','.join(values)))
             cnt += 1
         except Exception as e:
+            # error occured, display the current sql statement
             print('insert into %s (%s) values(%s)' % (tbl,','.join(fld_names),','.join(values)))
             print()
             print(e)
+            # quit debug the error data
             conn_sqlite.close()
             conn_pg.close()
             sys.exit()
-            cnt_err += 1
     print('records count:%s, inserted:%s, errors:%s.' % (len(rows),cnt,cnt_err))
 
 conn_sqlite.commit()
