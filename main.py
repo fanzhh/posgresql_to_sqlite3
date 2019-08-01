@@ -8,7 +8,7 @@ cur_pg = conn_pg.cursor()
 conn_sqlite = sqlite3.connect('/tmp/db.sqlite3')
 cur_sqlite = conn_sqlite.cursor()
 
-# all tables, these tables should had been created in sqlite3
+# all tables, these tables should had been created in sqlite3 with the same field name
 tbls = ['table1','table2',...]
 
 for tbl in tbls:
