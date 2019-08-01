@@ -49,7 +49,7 @@ for tbl in tbls:
             print('insert into %s (%s) values(%s)' % (tbl,','.join(fld_names),','.join(values)))
             print()
             print(e)
-            # quit debug the error data
+            # quit to debug the error data
             conn_sqlite.close()
             conn_pg.close()
             sys.exit()
